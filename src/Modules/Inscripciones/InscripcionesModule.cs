@@ -14,7 +14,8 @@ public static class InscripcionesModule
         services.AddSingleton<IModuleModelConfiguration, InscripcionesModelConfiguration>();
         services.AddOptions<InscripcionesOptions>().BindConfiguration(InscripcionesOptions.SectionName);
         services.AddScoped<IInscripcionesService, InscripcionesService>();
-        services.AddHostedService<ReservasExpiracionService>();
+        services.AddScoped<ExpiracionReservasService>();
+        services.AddHostedService<ReservasExpiracionBackgroundService>();
         return services;
     }
 

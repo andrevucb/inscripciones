@@ -38,3 +38,7 @@ app.MapInscripcionesEndpoints();
 app.MapAuditoriaEndpoints();
 
 app.Run();
+
+public partial class Program
+{
+}
