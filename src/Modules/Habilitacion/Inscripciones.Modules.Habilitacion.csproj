@@ -13,6 +13,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Shared\Inscripciones.Shared.csproj" />
     <ProjectReference Include="..\Catalogo\Inscripciones.Modules.Catalogo.csproj" />
+    <ProjectReference Include="..\Auditoria\Inscripciones.Modules.Auditoria.csproj" />
   </ItemGroup>
 
   <ItemGroup>

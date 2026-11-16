@@ -1,3 +1,4 @@
+using Inscripciones.Modules.Auditoria.Contracts;
 using Inscripciones.Modules.Auditoria.Data;
 using Inscripciones.Shared.Data;
 using Microsoft.AspNetCore.Routing;
@@ -10,6 +11,7 @@ public static class AuditoriaModule
     public static IServiceCollection AddAuditoriaModule(this IServiceCollection services)
     {
         services.AddSingleton<IModuleModelConfiguration, AuditoriaModelConfiguration>();
+        services.AddScoped<IAuditoriaService, AuditoriaService>();
         return services;
     }
 
