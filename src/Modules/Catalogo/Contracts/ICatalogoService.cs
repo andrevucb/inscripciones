@@ -13,4 +13,8 @@ public interface ICatalogoService
     Task<IReadOnlyList<HorarioDisponible>> ObtenerHorariosDeMateria(
         int materiaId,
         CancellationToken cancellationToken = default);
+
+    Task LiberarCupo(
+        int horarioId,
+        CancellationToken cancellationToken = default);
 }

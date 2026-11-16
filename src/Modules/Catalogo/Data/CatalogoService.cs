@@ -76,4 +76,17 @@ public sealed class CatalogoService(AppDbContext db) : ICatalogoService
                 horario.CuposDisponibles))
             .ToListAsync(cancellationToken);
     }
+
+    public async Task LiberarCupo(
+        int horarioId,
+        CancellationToken cancellationToken = default)
+    {
+        await db.Database.ExecuteSqlInterpolatedAsync(
+            $"""
+             UPDATE "Horarios"
+             SET "CuposDisponibles" = "CuposDisponibles" + 1
+             WHERE "Id" = {horarioId}
+             """,
+            cancellationToken);
+    }
 }
