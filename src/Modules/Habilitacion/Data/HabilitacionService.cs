@@ -31,10 +31,23 @@ public sealed class HabilitacionService(AppDbContext db, ICatalogoService catalo
                 materia.Nombre,
                 materia.Horarios
                     .Select(horario => new HorarioResponse(
-                        horario.Id,
+                        horario.HorarioId,
                         horario.Descripcion,
                         horario.CuposDisponibles))
                     .ToList()))
             .ToList();
+    }
+
+    public async Task<bool> EstaHabilitada(
+        string estudianteId,
+        int materiaId,
+        CancellationToken cancellationToken = default)
+    {
+        return await db.Set<MateriaHabilitada>()
+            .AnyAsync(
+                materiaHabilitada =>
+                    materiaHabilitada.EstudianteId == estudianteId &&
+                    materiaHabilitada.MateriaId == materiaId,
+                cancellationToken);
     }
 }

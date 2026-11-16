@@ -47,4 +47,33 @@ public sealed class CatalogoService(AppDbContext db) : ICatalogoService
                     .ToList()))
             .ToList();
     }
+
+    public async Task<HorarioDetalle?> ObtenerHorario(
+        int horarioId,
+        CancellationToken cancellationToken = default)
+    {
+        return await db.Set<Horario>()
+            .Where(horario => horario.Id == horarioId)
+            .Select(horario => new HorarioDetalle(
+                horario.Id,
+                horario.MateriaId,
+                horario.Descripcion,
+                horario.CuposTotales,
+                horario.CuposDisponibles))
+            .FirstOrDefaultAsync(cancellationToken);
+    }
+
+    public async Task<IReadOnlyList<HorarioDisponible>> ObtenerHorariosDeMateria(
+        int materiaId,
+        CancellationToken cancellationToken = default)
+    {
+        return await db.Set<Horario>()
+            .Where(horario => horario.MateriaId == materiaId)
+            .OrderBy(horario => horario.Descripcion)
+            .Select(horario => new HorarioDisponible(
+                horario.Id,
+                horario.Descripcion,
+                horario.CuposDisponibles))
+            .ToListAsync(cancellationToken);
+    }
 }
