@@ -1,0 +1,23 @@
+services:
+  postgres:
+    image: postgres:18
+    container_name: inscripciones-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: inscripciones
+      POSTGRES_USER: inscripciones
+      POSTGRES_PASSWORD: inscripciones
+    ports:
+      - "5432:5432"
+    # En postgres:18 el PGDATA es /var/lib/postgresql/18/docker,
+    # por eso el volumen se monta en /var/lib/postgresql y no en .../data.
+    volumes:
+      - postgres_data:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U inscripciones -d inscripciones"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  postgres_data:

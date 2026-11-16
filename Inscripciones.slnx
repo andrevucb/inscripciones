@@ -1,0 +1,24 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Inscripciones.Api/Inscripciones.Api.csproj" />
+  </Folder>
+  <Folder Name="/src/Modules/" />
+  <Folder Name="/src/Modules/Auditoria/">
+    <Project Path="src/Modules/Auditoria/Inscripciones.Modules.Auditoria.csproj" />
+  </Folder>
+  <Folder Name="/src/Modules/Catalogo/">
+    <Project Path="src/Modules/Catalogo/Inscripciones.Modules.Catalogo.csproj" />
+  </Folder>
+  <Folder Name="/src/Modules/Habilitacion/">
+    <Project Path="src/Modules/Habilitacion/Inscripciones.Modules.Habilitacion.csproj" />
+  </Folder>
+  <Folder Name="/src/Modules/Inscripciones/">
+    <Project Path="src/Modules/Inscripciones/Inscripciones.Modules.Inscripciones.csproj" />
+  </Folder>
+  <Folder Name="/src/Shared/">
+    <Project Path="src/Shared/Inscripciones.Shared.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Inscripciones.Tests/Inscripciones.Tests.csproj" />
+  </Folder>
+</Solution>

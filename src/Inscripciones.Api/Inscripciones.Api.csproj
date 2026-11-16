@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <ItemGroup>
+    <ProjectReference Include="..\Shared\Inscripciones.Shared.csproj" />
+    <ProjectReference Include="..\Modules\Catalogo\Inscripciones.Modules.Catalogo.csproj" />
+    <ProjectReference Include="..\Modules\Habilitacion\Inscripciones.Modules.Habilitacion.csproj" />
+    <ProjectReference Include="..\Modules\Inscripciones\Inscripciones.Modules.Inscripciones.csproj" />
+    <ProjectReference Include="..\Modules\Auditoria\Inscripciones.Modules.Auditoria.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.15">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.3" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+</Project>
