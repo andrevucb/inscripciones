@@ -122,8 +122,13 @@ tests/
     Integration/InscripcionesApiFactory.cs
     Integration/InscripcionesEndpointsTests.cs
     Integration/AssemblyInfo.cs
+tests/k6/
+  README.md                         -> dataset de 10k, tokens y escenarios RA-01
+  ra-01-dia.js                      -> 10.000 estudiantes en un día comprimido
+  ra-01-capacidad.js                -> 500 VUs sostenidos
 docs/
   usuarios-k6.md                    -> usuarios y tokens para k6
+  asr/requisitos-de-arquitectura.md -> requisitos de arquitectura (ASR)
 ```
 
 Cada módulo expone `AddXModule(IServiceCollection)` y `MapXEndpoints(IEndpointRouteBuilder)`. `Program.cs` solo compone. Los módulos se comunican por interfaces públicas (`ICatalogoService`, `IHabilitacionService`, `IAuditoriaService`), nunca accediendo a tablas de otro módulo.
@@ -431,4 +436,4 @@ Cómo funcionan:
 
 ## Pendiente
 
-- **Fase 6 (k6, la ejecuta el usuario)**: último cupo concurrente, latencia de lectura, latencia de escritura y reservas que vencen bajo carga. Usar [`docs/usuarios-k6.md`](docs/usuarios-k6.md) para los tokens y verificar el estado final en la base.
+- **Fase 6 (k6, la ejecuta el usuario)**: último cupo concurrente, latencia de lectura, latencia de escritura y reservas que vencen bajo carga. Usar [`docs/usuarios-k6.md`](docs/usuarios-k6.md) para los usuarios base y [`tests/k6/README.md`](tests/k6/README.md) para el dataset de 10.000 estudiantes, los tokens y los escenarios de RA-01.

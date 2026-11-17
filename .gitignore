@@ -485,3 +485,9 @@ $RECYCLE.BIN/
 
 # Vim temporary swap files
 *.swp
+
+# k6 load tests
+tests/k6/node_modules/
+tests/k6/data/estudiantes.json
+tests/k6/data/*.tmp-*
+tests/k6/results/

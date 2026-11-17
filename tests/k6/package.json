@@ -1,0 +1,14 @@
+{
+  "name": "inscripciones-k6",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "extraer-catalogo": "node scripts/extraer-catalogo.mjs",
+    "generar-seed": "node scripts/generar-seed.mjs",
+    "generar-tokens": "node scripts/generar-tokens.mjs"
+  },
+  "devDependencies": {
+    "pdfjs-dist": "^6.5.438"
+  }
+}
