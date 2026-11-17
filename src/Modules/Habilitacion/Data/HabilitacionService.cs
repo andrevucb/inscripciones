@@ -14,6 +14,7 @@ public sealed class HabilitacionService(AppDbContext db, ICatalogoService catalo
         CancellationToken cancellationToken = default)
     {
         var materiaIds = await db.Set<MateriaHabilitada>()
+            .AsNoTracking()
             .Where(materiaHabilitada => materiaHabilitada.EstudianteId == estudianteId)
             .Select(materiaHabilitada => materiaHabilitada.MateriaId)
             .ToListAsync(cancellationToken);
@@ -44,6 +45,7 @@ public sealed class HabilitacionService(AppDbContext db, ICatalogoService catalo
         CancellationToken cancellationToken = default)
     {
         return await db.Set<MateriaHabilitada>()
+            .AsNoTracking()
             .AnyAsync(
                 materiaHabilitada =>
                     materiaHabilitada.EstudianteId == estudianteId &&

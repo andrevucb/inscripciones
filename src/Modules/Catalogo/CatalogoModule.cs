@@ -11,6 +11,7 @@ public static class CatalogoModule
     public static IServiceCollection AddCatalogoModule(this IServiceCollection services)
     {
         services.AddSingleton<IModuleModelConfiguration, CatalogoModelConfiguration>();
+        services.AddSingleton<MateriasCache>();
         services.AddScoped<ICatalogoService, CatalogoService>();
         return services;
     }

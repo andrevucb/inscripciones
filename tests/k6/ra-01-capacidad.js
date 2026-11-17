@@ -2,6 +2,7 @@ import exec from 'k6/execution';
 import { estudiantes, estudiantePorIndice, verificarVigencia } from './lib/estudiantes.js';
 import { verificarApiYToken, leerMateriasHabilitadas } from './lib/api.js';
 import { validarRespuesta } from './lib/checks.js';
+import { generarReporte } from './lib/reporte.js';
 
 /**
  * RA-01 — capacidad sostenida de lectura.
@@ -50,6 +51,15 @@ export const options = {
     'checks{endpoint:materias_habilitadas,escenario:capacidad}': ['rate>0.99'],
   },
 };
+
+export const handleSummary = generarReporte({
+  archivo: 'ra-01-capacidad.md',
+  titulo: 'Capacidad (500 VUs)',
+  escenario: 'capacidad',
+  descripcion:
+    '500 VUs sostenidos durante 8 minutos, rotando por los 10.000 tokens del dataset. ' +
+    'Este es el escenario que valida el requisito de 500 estudiantes concurrentes.',
+});
 
 export function setup() {
   verificarVigencia(estudiantes[0]);

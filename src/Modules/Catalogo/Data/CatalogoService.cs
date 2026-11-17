@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Inscripciones.Modules.Catalogo.Data;
 
-public sealed class CatalogoService(AppDbContext db) : ICatalogoService
+public sealed class CatalogoService(AppDbContext db, MateriasCache materiasCache) : ICatalogoService
 {
     public async Task<IReadOnlyList<MateriaConHorarios>> ObtenerMateriasConHorarios(
         IReadOnlyCollection<int> materiaIds,
@@ -16,13 +16,10 @@ public sealed class CatalogoService(AppDbContext db) : ICatalogoService
             return [];
         }
 
-        var materias = await db.Set<Materia>()
-            .Where(materia => materiaIds.Contains(materia.Id))
-            .OrderBy(materia => materia.Nombre)
-            .Select(materia => new { materia.Id, materia.Nombre })
-            .ToListAsync(cancellationToken);
+        var todasLasMaterias = await materiasCache.ObtenerTodas();
 
         var horarios = await db.Set<Horario>()
+            .AsNoTracking()
             .Where(horario => materiaIds.Contains(horario.MateriaId))
             .OrderBy(horario => horario.Descripcion)
             .Select(horario => new
@@ -34,12 +31,14 @@ public sealed class CatalogoService(AppDbContext db) : ICatalogoService
             })
             .ToListAsync(cancellationToken);
 
-        return materias
+        return todasLasMaterias
+            .Where(materia => materiaIds.Contains(materia.Key))
+            .OrderBy(materia => materia.Value)
             .Select(materia => new MateriaConHorarios(
-                materia.Id,
-                materia.Nombre,
+                materia.Key,
+                materia.Value,
                 horarios
-                    .Where(horario => horario.MateriaId == materia.Id)
+                    .Where(horario => horario.MateriaId == materia.Key)
                     .Select(horario => new HorarioDisponible(
                         horario.Id,
                         horario.Descripcion,
@@ -53,6 +52,7 @@ public sealed class CatalogoService(AppDbContext db) : ICatalogoService
         CancellationToken cancellationToken = default)
     {
         return await db.Set<Horario>()
+            .AsNoTracking()
             .Where(horario => horario.Id == horarioId)
             .Select(horario => new HorarioDetalle(
                 horario.Id,
@@ -68,6 +68,7 @@ public sealed class CatalogoService(AppDbContext db) : ICatalogoService
         CancellationToken cancellationToken = default)
     {
         return await db.Set<Horario>()
+            .AsNoTracking()
             .Where(horario => horario.MateriaId == materiaId)
             .OrderBy(horario => horario.Descripcion)
             .Select(horario => new HorarioDisponible(

@@ -2,6 +2,7 @@ import exec from 'k6/execution';
 import { estudiantes, estudiantePorIndice, verificarVigencia } from './lib/estudiantes.js';
 import { verificarApiYToken, leerMateriasHabilitadas } from './lib/api.js';
 import { validarRespuesta } from './lib/checks.js';
+import { generarReporte } from './lib/reporte.js';
 
 /**
  * RA-01 — lectura de /materias/habilitadas en un día normal de inscripciones.
@@ -90,6 +91,15 @@ export const options = {
     'dropped_iterations{escenario:dia}': ['count<1'],
   },
 };
+
+export const handleSummary = generarReporte({
+  archivo: 'ra-01-dia.md',
+  titulo: 'Día (10.000 estudiantes)',
+  escenario: 'dia',
+  descripcion:
+    'Jornada comprimida de 08:00 a 20:00: 12 franjas de 21 s con tasa de llegada constante. ' +
+    'Cada estudiante del dataset se lee al menos una vez; el pico de concurrencia ronda las 30 peticiones en vuelo.',
+});
 
 export function setup() {
   verificarVigencia(estudiantes[0]);

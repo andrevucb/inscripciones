@@ -289,6 +289,22 @@ Además de `200` y `Content-Type: application/json`:
 
 ## 9. Repetir y reportar
 
+Cada corrida genera automáticamente un reporte Markdown en
+`tests/k6/results/ra-01-dia.md` o `tests/k6/results/ra-01-capacidad.md`, con
+métricas del escenario, latencias y resultado de cada umbral. La carpeta está
+gitignored; créala si no existe:
+
+```bash
+mkdir -p tests/k6/results
+```
+
+La consola muestra un resumen corto con el mismo resultado (PASS/FAIL) y la
+ruta del reporte. Para guardar también la salida de consola, redirígela:
+
+```bash
+caffeinate -dimsu k6 run tests/k6/ra-01-dia.js > tests/k6/results/dia.log 2>&1
+```
+
 - Corre el escenario del día 3 veces y reporta mediana y peor p95.
 - No reinicies la API ni regeneres la base entre corridas: las lecturas son
   idempotentes.
@@ -299,17 +315,20 @@ Además de `200` y `Content-Type: application/json`:
 ### Resultados de referencia
 
 Corrida local del 2026-11-17 sobre macOS x86-64 (16 vCPU lógicas), API .NET 10
-en Release y PostgreSQL 18 en Docker, todo en la misma máquina:
+en Release y PostgreSQL 18 en Docker, todo en la misma máquina, con el catálogo
+de materias cacheado en memoria (`MateriasCache`) y los horarios leídos de la
+base en cada petición para no servir `CuposDisponibles` desactualizados:
 
 | Escenario | Requests | p95 | p99 | Errores | Duración |
 |---|---:|---:|---:|---:|---:|
-| Día (10.000 estudiantes) | 10.505 | 8,09 ms | 8,74 ms | 0 | 4m31s |
-| Capacidad (500 VUs) | 973.046 | 288,01 ms | 314,98 ms | 0 | 8m30s |
+| Día (10.000 estudiantes) | 10.510 | 5,99 ms | 6,35 ms | 0 | 4m31s |
+| Capacidad (500 VUs) | 1.305.923 | 222,82 ms | 248,14 ms | 0 | 8m30s |
 
-El escenario de capacidad sostuvo ~1.908 req/s con 500 VUs y 0% de fallos. Su
-p95 queda apenas por debajo del umbral de 300 ms: es la medición que más depende
-del hardware y del pool de conexiones. El escenario del día es holgado porque su
-concurrencia máxima ronda las 24–30 peticiones en vuelo.
+El escenario de capacidad sostuvo ~2.560 req/s con 500 VUs y 0% de fallos. Sin
+la caché de materias la misma corrida daba p95 ~323 ms y superaba el umbral de
+300 ms; el cambio eliminó una consulta por petición sin cachear los cupos. El
+escenario del día es holgado porque su concurrencia máxima ronda las 30
+peticiones en vuelo.
 
 ## 10. Archivos
 
@@ -320,12 +339,14 @@ tests/k6/
   lib/api.js                    request helper y verificación de humo
   lib/checks.js                 validación de estado y forma del JSON
   lib/estudiantes.js            SharedArray de tokens + control de vigencia
+  lib/reporte.js                handleSummary -> reporte Markdown en results/
   scripts/extraer-catalogo.mjs  PDFs de samples/ -> catalogo.json
   scripts/generar-seed.mjs      catalogo.json -> seed-10k.sql
   scripts/generar-tokens.mjs    10.000 logins -> estudiantes.json
   data/catalogo.json            catálogo versionado
   data/seed-10k.sql             seed generado y versionado
   data/estudiantes.json         tokens generados (gitignored)
+  results/                      reportes Markdown generados (gitignored)
 ```
 
 ## 11. Problemas frecuentes
@@ -338,7 +359,7 @@ tests/k6/
 | Picos de varios minutos o franjas incompletas | El equipo entró en reposo: usa `caffeinate -dimsu` en macOS |
 | Generación de tokens mucho más lenta de lo normal | El equipo entró en reposo: usa `caffeinate -dimsu` |
 | `host.docker.internal` no resuelve | Usa la IP del host (`ipconfig getifaddr en0`) |
-| p95 alto solo en capacidad | Pool de conexiones, consultas secuenciales o CPU/IO de PostgreSQL |
+| p95 alto solo en capacidad | Consultas secuenciales por petición, pool de conexiones o CPU/IO de PostgreSQL |
 | k6 no encuentra `estudiantes.json` | Ejecuta desde la raíz del repo y revisa `DATA_FILE` |
 | Error de sintaxis al importar `fs` | k6 no es Node: usa `open()`/`SharedArray`, no módulos de Node |
 
